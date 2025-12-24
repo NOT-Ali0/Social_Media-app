@@ -87,7 +87,6 @@
                                 >
                                 <p class="comment-text">{comment.body}</p>
                             </div>
-                            <!-- <span class="comment-time">{comment.time}</span> -->
                         </div>
                     </div>
                 {/each}

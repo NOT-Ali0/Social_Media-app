@@ -14,11 +14,8 @@
 
     let isOpen = $state(false);
     let post = null;
-    // let title = "";
     let body = $state("");
-    // BodystateValue.set({
-    //     BodyValue:body,
-    // });
+    
 
     function handleBodyvalue(e) {
         body = e.target.value;
@@ -50,7 +47,6 @@
         isOpen = state.isOpen;
         post = state.post;
         if (post) {
-            // title = post.title || "";
             body = post.body || "";
         }
     });
@@ -58,11 +54,7 @@
         editModalStore.close();
     }
 
-    // function handleSave() {
-    //     console.log("Saving post:", { ...post, title, body });
-    //     Logic to save would go here
-    //     editModalStore.close();
-    // }
+    
 </script>
 
 {#if isOpen}

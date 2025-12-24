@@ -224,7 +224,7 @@
 
     .tags-cont {
         display: flex;
-        width: auto; /* Fixed: tags shouldn't handle their own width oddly like 10vw */
+        width: auto; 
         max-width: 100%;
         border-radius: 20px;
         flex-direction: row;
@@ -234,7 +234,7 @@
         align-items: center;
         margin-top: 5px;
         gap: 5px;
-        display: inline-flex; /* Make it fit content */
+        display: inline-flex; 
         margin-right: 8px;
     }
 
@@ -250,7 +250,7 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         margin-bottom: var(--spacing-md, 16px);
         width: 100%;
-        position: relative; /* Ensure stacking context */
+        position: relative; 
     }
 
     .post-header {

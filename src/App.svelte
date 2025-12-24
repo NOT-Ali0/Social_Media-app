@@ -1,5 +1,4 @@
 <script>
-  // Import global styles
   import './app.css';
   import Navbar from './lib/components/Navbar.svelte';
   import Sidebar from './lib/components/Sidebar.svelte';
@@ -11,7 +10,6 @@
   import Profile from './lib/pages/Profile.svelte';
     import { onMount } from 'svelte';
 
-  // Simple Router State (Dummy logic for now)
   let currentPage = 'home'; // 'login', 'register', 'home', 'profile'
 
 

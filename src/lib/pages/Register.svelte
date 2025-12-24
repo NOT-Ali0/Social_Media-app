@@ -18,7 +18,6 @@
     
     
     function handleRegister() {
-        // Simulate register
         dispatch("navigate", "home");
     }
 
@@ -81,8 +80,7 @@
         accept="image*/"
         
         />
-        <!-- <input type="file" accept="image*/" bind:this={file} on:change={(e)=>handleImageFile(e)}> -->
-        <!-- <Input type="password" placeholder="Confirm Password" /> -->
+        
 
         <p class="terms">
             By clicking Sign Up, you agree to our Terms, Data Policy and Cookie

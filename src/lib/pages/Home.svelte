@@ -31,11 +31,7 @@
             userPhoto = localStorage.getItem("image");
         }
     });
-    // let postsData = async ()=>{
-    // let response = await fetch("https://tarmeezacademy.com/api/v1/posts?limit=50")
-    // let data = await response.json()
-    // posts = data.data
-    // }
+    
 
     let handleUploadField = () => {
         UploadPhoto = !UploadPhoto;
@@ -95,14 +91,7 @@
         file = null;
         fileInput = null;
     }
-    //comments sction 
-    // let commentText = $state([{}]);
-    // let handleComment = (id)=>{
-    // axios.get(`https://tarmeezacademy.com/api/v1/posts/${id}`)
-    // .then((res)=>commentText = res.data.data.comments)
-    // .catch((err)=>console.log(err))
-    // }
-
+    
 
     let fileInput = $state(null);
     let file = $state(null);

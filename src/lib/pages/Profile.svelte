@@ -140,74 +140,7 @@
 </div>
 <EditPostModal on:reload={handleProfilePosts} />
 
-<!-- {#if isOpen}
-    <div
-        class="modal-backdrop"
-        transition:fade={{ duration: 200 }}
-        on:click|self={handleClose}
-        role="presentation"
-    >
-        <div
-            class="modal-container"
-            transition:scale={{ duration: 200, start: 0.9 }}
-        >
-            <div class="modal-header">
-                <h3>Edit Post</h3>
-                <button
-                    class="close-btn"
-                    on:click={handleClose}
-                    aria-label="Close modal"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                    >
-                        <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                        />
-                    </svg>
-                </button>
-            </div>
 
-            <div class="modal-body">
-                <div class="input-group">
-                    <label for="post-title">Title</label>
-                    <input
-                        type="text"
-                        id="post-title"
-                        bind:value={title}
-                        placeholder="Post Title"
-                    />
-                </div>
-                <div class="input-group">
-                    <label for="post-title">Title</label>
-                    <Filesinput
-                        {file}
-                        on:change={(e) => handleImageFile(e)}
-                        accept="image*/"
-                    />
-                </div>
-                <div class="input-group">
-                    <label for="post-body">Content</label>
-                    <textarea
-                        id="post-body"
-                        bind:value={body}
-                        rows="5"
-                        placeholder="What's on your mind?"
-                    ></textarea>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" on:click={handleClose}>Cancel</button
-                >
-                <button class="btn-save" on:click={handleSubmit}>Save</button>
-            </div>
-        </div>
-    </div>
-{/if}  -->
 
 <style>
     .profile-container {

@@ -1,16 +1,16 @@
 <script>
-    export let type = "text";
     export let placeholder = "";
-    export let value = "";
     export let label = "";
-    export let accept = "";
+    export let file;
+    export let accept;
 </script>
 
 <div class="input-group">
     {#if label}
         <label>{label}</label>
     {/if}
-    <input  {accept} {type} {placeholder} bind:value on:input class="input" />
+        <input type="file" {accept} bind:this={file} on:change>
+
 </div>
 
 <style>

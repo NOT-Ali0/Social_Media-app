@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
-
+    const image = localStorage.getItem("image");
     function go(page) {
         dispatch("navigate", page);
     }
@@ -57,7 +57,7 @@
             >
         </button>
         <div class="avatar" on:click={() => go("profile")}>
-            <img src="https://via.placeholder.com/40" alt="User" />
+            <img src={image} alt="User" />
         </div>
     </div>
 </nav>

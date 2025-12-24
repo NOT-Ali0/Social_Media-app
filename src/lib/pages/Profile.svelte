@@ -1,54 +1,86 @@
 <script>
     import PostCard from "../components/PostCard.svelte";
     import Button from "../components/Button.svelte";
+    import { onMount } from "svelte";
+    import axios from "axios";
+    import { fade, scale } from "svelte/transition";
+    import Filesinput from "../components/Filesinput.svelte";
+    import PostCardProfile from "../components/PostCardProfile.svelte";
+    import EditPostModal from "../components/EditPostModal.svelte";
+    import { BodystateValue } from "../stores/BodyStateValue";
+    let isOpen = $state(true);
+    let username = $state("");
+    let imageUrl = $state("");
+    if (localStorage.getItem("image")) {
+        imageUrl = localStorage.getItem("image");
+    }
+    if (localStorage.getItem("username")) {
+        username = localStorage.getItem("username");
+    }
 
-    const user = {
-        name: "Current User",
-        bio: "Web Developer | Svelte Enthusiast",
-        friends: 420,
-        cover: "https://via.placeholder.com/940x350?text=Cover+Photo",
-        avatar: "https://via.placeholder.com/168x168?text=Me",
+    let profileposts = $state([]);
+
+    
+
+
+    let handleProfilePosts = () => {
+        axios
+            .get("https://tarmeezacademy.com/api/v1/posts")
+            .then((res) => {
+                profileposts = res.data.data.filter(
+                    (post) => post.author.id == localStorage.getItem("id")
+                );
+            })
+            .catch((err) => console.log(err));
     };
 
-    let posts = [
-        {
-            id: 101,
-            user: user.name,
-            time: "1h",
-            content: "Updated my profile picture! 😎",
-            image: user.avatar,
-            likes: 24,
-            comments: 2,
-            shares: 0,
-        },
-        {
-            id: 102,
-            user: user.name,
-            time: "2 days ago",
-            content: "Thinking about the future of web development...",
-            image: "",
-            likes: 10,
-            comments: 4,
-            shares: 1,
-        },
-    ];
+
+    // for (let i = 0; i < res.data.data.length; i++) {
+    //                 if (
+    //                     res.data.data[i].author.id == localStorage.getItem("id")
+    //                 ) {
+    //                     profileposts.push(res.data.data[i]);
+    //                 }
+    //             }
+
+
+    onMount(() => {
+        handleProfilePosts();
+    });
+
+    // editting section
+    let title = $state("");
+    let file = $state(null);
+    let body = $state("");
+    let handleClose = () => {
+        isOpen = false;
+    };
+    let handleOpen = () => {
+        isOpen = true;
+    };
+    let handleImageFile = (e) => {
+        file = e.target.files[0];
+    };
+    let handleSubmit = () => {
+        isOpen = false;
+    };
 </script>
 
 <div class="profile-container">
     <div class="profile-header">
         <div class="cover-photo">
-            <img src={user.cover} alt="Cover" />
+            <img src={imageUrl} alt="Cover" />
         </div>
 
         <div class="profile-info-section">
             <div class="profile-details">
                 <div class="avatar-large">
-                    <img src={user.avatar} alt={user.name} />
+                    <img src={imageUrl} alt={username} />
                 </div>
 
                 <div class="info">
-                    <h1>{user.name}</h1>
-                    <span class="friends">{user.friends} friends</span>
+                    <h1>{username}</h1>
+                    <!-- <span class="friends">{user.friends} friends</span> -->
                 </div>
             </div>
 
@@ -74,7 +106,7 @@
         <div class="left-col">
             <div class="card intro">
                 <h2>Intro</h2>
-                <p>{user.bio}</p>
+                <!-- <p>{user.bio}</p> -->
                 <Button variant="secondary" fullWidth>Edit Bio</Button>
             </div>
 
@@ -100,12 +132,82 @@
                 />
             </div>
 
-            {#each posts as post (post.id)}
-                <PostCard {post} />
+            {#each profileposts as post (post.id)}
+                <PostCardProfile on:reload={handleProfilePosts} {post} />
             {/each}
         </div>
     </div>
 </div>
+<EditPostModal on:reload={handleProfilePosts} />
+
+<!-- {#if isOpen}
+    <div
+        class="modal-backdrop"
+        transition:fade={{ duration: 200 }}
+        on:click|self={handleClose}
+        role="presentation"
+    >
+        <div
+            class="modal-container"
+            transition:scale={{ duration: 200, start: 0.9 }}
+        >
+            <div class="modal-header">
+                <h3>Edit Post</h3>
+                <button
+                    class="close-btn"
+                    on:click={handleClose}
+                    aria-label="Close modal"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                    >
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="post-title">Title</label>
+                    <input
+                        type="text"
+                        id="post-title"
+                        bind:value={title}
+                        placeholder="Post Title"
+                    />
+                </div>
+                <div class="input-group">
+                    <label for="post-title">Title</label>
+                    <Filesinput
+                        {file}
+                        on:change={(e) => handleImageFile(e)}
+                        accept="image*/"
+                    />
+                </div>
+                <div class="input-group">
+                    <label for="post-body">Content</label>
+                    <textarea
+                        id="post-body"
+                        bind:value={body}
+                        rows="5"
+                        placeholder="What's on your mind?"
+                    ></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" on:click={handleClose}>Cancel</button
+                >
+                <button class="btn-save" on:click={handleSubmit}>Save</button>
+            </div>
+        </div>
+    </div>
+{/if}  -->
 
 <style>
     .profile-container {
@@ -271,6 +373,150 @@
         .avatar-large {
             width: 140px;
             height: 140px;
+        }
+    }
+    /* editing style */
+
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: var(--spacing-md);
+    }
+
+    .modal-container {
+        background: var(--card-bg);
+        width: 100%;
+        max-width: 500px;
+        border-radius: var(--radius-lg);
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .modal-header {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--divider-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .close-btn {
+        padding: 8px;
+        border-radius: 50%;
+        background: var(--bg-color);
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .close-btn:hover {
+        background: #e4e6eb;
+        color: var(--text-primary);
+    }
+
+    .modal-body {
+        padding: var(--spacing-md);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-group label {
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .input-group input,
+    .input-group textarea {
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--divider-color);
+        background: var(--bg-color);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+        outline: none;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+        border-color: var(--primary-color);
+        border-width: 2px;
+        padding: 9px; /* adjust for border width */
+    }
+
+    .input-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal-footer {
+        padding: var(--spacing-md);
+        border-top: 1px solid var(--divider-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--spacing-sm);
+    }
+
+    .btn-cancel {
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: transparent;
+        transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+        background: var(--bg-color);
+    }
+
+    .btn-save {
+        padding: 8px 24px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        color: white;
+        background: var(--primary-color);
+        transition: opacity 0.2s;
+    }
+
+    .btn-save:hover {
+        opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+        .modal-container {
+            width: 95%;
         }
     }
 </style>

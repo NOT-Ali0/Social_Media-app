@@ -14,7 +14,9 @@
             password: password
         }
         axios.post("https://tarmeezacademy.com/api/v1/login",param)
-        .then((res)=> localStorage.setItem("token",res.data.token))
+        .then((res)=> {localStorage.setItem("token",res.data.token)
+            localStorage.setItem("username",username)
+        })
         .then(()=>alert("Login Success"))
         .then(()=>handleLogin())
         .catch((err)=>alert(err.response.data.message))

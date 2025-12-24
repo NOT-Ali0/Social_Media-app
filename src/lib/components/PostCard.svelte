@@ -1,23 +1,39 @@
 <script>
     export let post;
+    import { modalStore } from "../stores/modalStore";
+    import { handleComment } from "./CommentFunc.svelte.js";
+
+    
 </script>
 
 <div class="post-card">
     <div class="post-header">
         <div class="avatar">
-            <img  src="profilePic.png" alt="">
+            <img src="profilePic.png" alt="" />
         </div>
         <div class="user-info">
-            <!-- <div class="name">{post.author.name}</div> -->
+            <div class="name">{post.author?.name}</div>
             <div class="time">{post.created_at}</div>
         </div>
-        <button class="more-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"
-                ><path
-                    d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                /></svg
+        <!-- <div class="edit-btn">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-ellipsis-icon lucide-ellipsis"
+                ><circle cx="12" cy="12" r="1" /><circle
+                    cx="19"
+                    cy="12"
+                    r="1"
+                /><circle cx="5" cy="12" r="1" /></svg
             >
-        </button>
+        </div> -->
     </div>
 
     <div class="post-content">
@@ -30,15 +46,12 @@
         {/if}
     </div>
 
-
-    
     {#if post.tags}
-    {#each post.tags as tag}
-        
-    <div class="tags-cont">
-        {post.tags}
-    </div>
-    {/each}
+        {#each post.tags as tag}
+            <div class="tags-cont">
+                {post.tags}
+            </div>
+        {/each}
     {/if}
     <div class="post-stats">
         <div class="stat-left">
@@ -54,18 +67,27 @@
         <button class="action-btn">
             <span class="icon">👍</span> Like
         </button>
-        <button class="action-btn">
-            <span class="icon">💬</span> Comment
-        </button>
+        <div on:click={() => modalStore.open(post)}>
+            <button class="action-btn" on:click={() => handleComment(post.id)}>
+                <span class="icon">💬</span> Comment
+            </button>
+        </div>
         <button class="action-btn">
             <span class="icon">↗️</span> Share
         </button>
     </div>
 </div>
 
-<style>
 
-    .tags-cont{
+<style>
+    .edit-btn {
+        color: var(--text-primary);
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+    .tags-cont {
         display: flex;
         width: 10vw;
         border-radius: 20px;
@@ -78,9 +100,8 @@
         gap: 5px;
     }
 
-    .tags-cont p{
+    .tags-cont p {
         padding: 3px;
-        
     }
     .post-card {
         background: var(--card-bg);
@@ -189,4 +210,6 @@
     .icon {
         font-size: 1.1rem;
     }
+
+    
 </style>

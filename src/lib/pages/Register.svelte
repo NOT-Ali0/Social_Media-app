@@ -3,15 +3,20 @@
     import axios from "axios";
     import Button from "../components/Button.svelte";
     import Input from "../components/Input.svelte";
+    import Filesinput from "../components/Filesinput.svelte";
 
     const dispatch = createEventDispatcher();
 
-    let username = "";
-    let email = "";
-    let name = "";
-    let password = "";
-
-
+    let username = $state("");
+    let email = $state("");
+    let name = $state("");
+    let password = $state("");
+    let file = $state();
+    let handleImageFile = (e)=>{
+        file = e.target.files[0]
+    }
+    
+    
     function handleRegister() {
         // Simulate register
         dispatch("navigate", "home");
@@ -21,21 +26,31 @@
         dispatch("navigate", "login");
     }
 
-    let RegisterData = async ()=>{
-        let param = {
-            name:name,
-            username: username,
-            email: email,
-            password: password
-        }
-        axios.post("https://tarmeezacademy.com/api/v1/register",param)
-        .then((res)=> localStorage.setItem("token",res.data.token))
-        .then(()=>alert("Register Success"))
-        .then(()=>handleRegister())
-        .catch((err)=>alert(err.response.data.message))
-        .catch((err)=>console.log(err.response.data.message))
-        
-    }
+    let RegisterData = async () => {
+        let param = new FormData();
+        param.append("name", name);
+        param.append("username", username);
+        param.append("email", email);
+        param.append("password", password);
+        param.append("image", file);
+
+        axios
+            .post("https://tarmeezacademy.com/api/v1/register", param, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((res) => {
+                localStorage.setItem("image", res.data.user.profile_image);
+                localStorage.setItem("id", res.data.user.id);
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("username", username);
+            })
+            .then(() => alert("Register Success"))
+            .then(() => handleRegister())
+            .catch((err) => alert(err.response.data.message))
+            .catch((err) => console.log(err.response.data.message));
+    };
 </script>
 
 <div class="auth-card">
@@ -50,8 +65,23 @@
             <Input type="text" placeholder="username" bind:value={username} />
             <Input type="text" placeholder="your name" bind:value={name} />
         </div>
-        <Input type="email" placeholder="Email or Phone Number" bind:value={email} />
-        <Input type="password" placeholder="New Password" bind:value={password} />
+        <Input
+            type="email"
+            placeholder="Email or Phone Number"
+            bind:value={email}
+        />
+        <Input
+            type="password"
+            placeholder="New Password"
+            bind:value={password}
+        />
+        <Filesinput
+        {file}
+        on:change={(e)=>handleImageFile(e)}
+        accept="image*/"
+        
+        />
+        <!-- <input type="file" accept="image*/" bind:this={file} on:change={(e)=>handleImageFile(e)}> -->
         <!-- <Input type="password" placeholder="Confirm Password" /> -->
 
         <p class="terms">

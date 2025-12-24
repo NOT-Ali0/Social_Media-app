@@ -1,114 +1,148 @@
 <script>
     import PostCard from "../components/PostCard.svelte";
     import Button from "../components/Button.svelte";
+    import CommentModal from "../components/CommentModal.svelte";
     import { onMount } from "svelte";
     import axios from "axios";
-
     let posts = $state([{}]);
-
+    let pageCount = $state(1);
+    let pageLimit = $state(0);
     let UploadPhoto = $state(false);
-
+    let userPhoto = $state("");
     let BodyInput = $state("");
+    const handlePreviousPage = () => {
+        pageCount--;
+        postsData();
+    };
+
+    const handleNextPage = () => {
+        pageCount++;
+        postsData();
+    };
+
+    // user store
+    let username = $state("");
     onMount(() => {
         postsData();
+        if (localStorage.getItem("username")) {
+            username = localStorage.getItem("username");
+        }
+        if (localStorage.getItem("image")) {
+            userPhoto = localStorage.getItem("image");
+        }
     });
-        // let postsData = async ()=>{
-        // let response = await fetch("https://tarmeezacademy.com/api/v1/posts?limit=50")
-        // let data = await response.json()
-        // posts = data.data
-        // }
+    // let postsData = async ()=>{
+    // let response = await fetch("https://tarmeezacademy.com/api/v1/posts?limit=50")
+    // let data = await response.json()
+    // posts = data.data
+    // }
 
-        let handleUploadField = ()=>{
-            UploadPhoto = !UploadPhoto
-        }
+    let handleUploadField = () => {
+        UploadPhoto = !UploadPhoto;
+    };
 
-        let postsData =  ()=>{
-            axios.get("https://tarmeezacademy.com/api/v1/posts?limit=50")
-            .then((res)=> posts=res.data.data)
-            .catch((err)=>console.log(err))
-        }
+    let postsData = () => {
+        if (pageCount < 1) return;
 
-        
-        function handlePost() {
-            if (!BodyInput.trim()) return;
-            
+        axios
+            .get(
+                `https://tarmeezacademy.com/api/v1/posts?limit=13&page=${pageCount}`,
+            )
+            .then((res) => {
+                posts = res.data.data;
+                pageLimit = res.data.meta.last_page;
+            })
+            .catch((err) => console.log(err));
+    };
+
+    function handlePost() {
+        if (!BodyInput.trim()) return;
+
         let formData = new FormData();
-        formData.append("body",BodyInput)
-        formData.append("image",file)
+        formData.append("body", BodyInput);
+        formData.append("image", file);
 
+        axios
+            .post("https://tarmeezacademy.com/api/v1/posts", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((res) => console.log(res.data))
+            .then(() => postsData())
+            .then(() => (UploadPhoto = false))
+            .catch(() => alert("something went wrong are you missing field?"))
+            .catch((err) => console.log(err));
 
-        axios.post("https://tarmeezacademy.com/api/v1/posts",formData,{
-            headers:{
-                "Content-Type": "multipart/form-data",
-                "Authorization":`Bearer ${localStorage.getItem("token")}`
-            }
-        })
-        .then((res)=>console.log(res.data))
-        .then(()=>postsData())
-        .then(()=>UploadPhoto= false)
-        .catch(()=> alert("something went wrong are you missing field?"))
-        .catch((err)=>console.log(err))
-        
         const newPost = {
             id: crypto.randomUUID(),
-            user:"",
+            user: "",
             time: Date.now().toLocaleString(),
             body: BodyInput,
             image: file,
             likes: 0,
             comments: 0,
             shares: 0,
-        }
+        };
+
+
+
         
-        posts = [...posts,newPost]
+        posts = [...posts, newPost];
         
-        BodyInput = ""
-        file = null
-        fileInput = null
+        BodyInput = "";
+        file = null;
+        fileInput = null;
     }
+    //comments sction 
+    // let commentText = $state([{}]);
+    // let handleComment = (id)=>{
+    // axios.get(`https://tarmeezacademy.com/api/v1/posts/${id}`)
+    // .then((res)=>commentText = res.data.data.comments)
+    // .catch((err)=>console.log(err))
+    // }
 
 
-
-    let fileInput = $state(null)
+    let fileInput = $state(null);
     let file = $state(null);
 
+    let handleFileChange = (e) => {
+        if (!fileInput) return;
 
-    let handleFileChange = (e)=>{
-        if(!fileInput)return;
-
-
-        fileInput = e.target
-        file = fileInput.files[0]
-        console.log(file);
-    }
-
-
-    
-    
+        fileInput = e.target;
+        file = fileInput.files[0];
+    };
 </script>
 
 <div class="home-container">
     <div class="create-post-card">
         <div class="input-area">
             <div class="avatar">
-                <img src="https://via.placeholder.com/40" alt="User" />
+                <img src={userPhoto} alt="User" />
             </div>
+            <span class="username">{username}</span>
             <input
                 type="text"
                 placeholder="What's on your mind, User?"
                 bind:value={BodyInput}
             />
-            
         </div>
         <div class="divider"></div>
         <div class="actions">
             <div class="action-item">
                 {#if UploadPhoto}
-                    <input type="file" id="file-input" accept="image/*" bind:this={fileInput} onchange={(e)=>handleFileChange(e)}>
+                    <input
+                        type="file"
+                        id="file-input"
+                        accept="image/*"
+                        bind:this={fileInput}
+                        onchange={(e) => handleFileChange(e)}
+                    />
                 {:else}
-                <div onclick={handleUploadField} class="Photo-post-cont">
-                <span  class="icon">📷</span> Photo/Video
-                </div>
+                    <div onclick={handleUploadField} class="Photo-post-cont">
+                        <span class="icon">📷</span> Photo/Video
+                    </div>
                 {/if}
             </div>
             <div class="action-item">
@@ -117,7 +151,7 @@
             <Button
                 size="sm"
                 on:click={handlePost}
-                disabled={!BodyInput.trim()||!file}>Post</Button
+                disabled={!BodyInput.trim() || !file}>Post</Button
             >
         </div>
     </div>
@@ -127,14 +161,34 @@
             <PostCard {post} />
         {/each}
     </div>
+    <div class="pagination">
+        <button onclick={handlePreviousPage}>Previous</button>
+        <button onclick={handleNextPage}>Next</button>
+    </div>
 </div>
 
+<CommentModal  />
+
 <style>
-    *{
+    * {
         box-sizing: border-box;
     }
 
-    .Photo-post-cont{
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        margin-top: var(--spacing-md);
+    }
+
+    .pagination button {
+        cursor: pointer;
+        padding: var(--spacing-sm);
+        width: 5vw;
+        background-color: rgb(94, 158, 255);
+        border-radius: var(--radius-sm);
+    }
+
+    .Photo-post-cont {
         cursor: pointer;
         width: 10vw;
         border-radius: 20px;
@@ -144,7 +198,6 @@
         align-items: center;
         margin-left: 5px;
     }
-
 
     .home-container {
         width: 100%;
@@ -163,6 +216,11 @@
         display: flex;
         gap: var(--spacing-sm);
         margin-bottom: var(--spacing-sm);
+        align-items: center;
+    }
+
+    .input-area input {
+        height: 4vh;
     }
 
     .avatar {

@@ -2,8 +2,6 @@
     export let post;
     import { modalStore } from "../stores/modalStore";
     import { handleComment } from "./CommentFunc.svelte.js";
-
-    
 </script>
 
 <div class="post-card">
@@ -15,7 +13,6 @@
             <div class="name">{post.author?.name}</div>
             <div class="time">{post.created_at}</div>
         </div>
-        
     </div>
 
     <div class="post-content">
@@ -60,7 +57,6 @@
     </div>
 </div>
 
-
 <style>
     .edit-btn {
         color: var(--text-primary);
@@ -70,21 +66,24 @@
         padding: 5px;
     }
     .tags-cont {
-        display: flex;
-        width: 10vw;
+        display: inline-flex;
+        width: auto;
+        max-width: 100%;
         border-radius: 20px;
-        flex-direction: row;
-        padding: 3px;
+        padding: 4px 12px;
         background-color: var(--bg-color);
         justify-content: center;
         align-items: center;
         margin-top: 5px;
         gap: 5px;
+        margin-right: 5px;
     }
 
     .tags-cont p {
-        padding: 3px;
+        padding: 0;
+        margin: 0;
     }
+
     .post-card {
         background: var(--card-bg);
         border-radius: var(--radius-md);
@@ -178,11 +177,12 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: var(--spacing-sm) 0;
+        padding: 12px 0; /* Larger touch target */
         font-weight: 600;
         color: var(--text-secondary);
         border-radius: var(--radius-sm);
         transition: background 0.2s;
+        min-height: 48px; /* Minimum touch target size */
     }
 
     .action-btn:hover {
@@ -190,8 +190,12 @@
     }
 
     .icon {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
-    
+    @media (max-width: 768px) {
+        .post-card {
+            border-radius: 0; /* Full width flow mostly often implies no radius */
+        }
+    }
 </style>

@@ -4,12 +4,14 @@
     import CommentModal from "../components/CommentModal.svelte";
     import { onMount } from "svelte";
     import axios from "axios";
+    import Loader from "../components/Loader.svelte";
     let posts = $state([{}]);
     let pageCount = $state(1);
     let pageLimit = $state(0);
     let UploadPhoto = $state(false);
     let userPhoto = $state("");
     let BodyInput = $state("");
+    let isLoading = $state(false);
     const handlePreviousPage = () => {
         pageCount--;
         postsData();
@@ -39,7 +41,7 @@
 
     let postsData = () => {
         if (pageCount < 1) return;
-
+        isLoading = true;
         axios
             .get(
                 `https://tarmeezacademy.com/api/v1/posts?limit=13&page=${pageCount}`,
@@ -47,6 +49,7 @@
             .then((res) => {
                 posts = res.data.data;
                 pageLimit = res.data.meta.last_page;
+                isLoading = false;
             })
             .catch((err) => console.log(err));
     };
@@ -147,8 +150,11 @@
 
     <div class="feed">
         {#each posts as post (post.id)}
-            <PostCard {post} />
+        <PostCard {post} />
         {/each}
+        {#if isLoading}
+            <Loader />
+        {/if}
     </div>
     <div class="pagination">
         <button onclick={handlePreviousPage}>Previous</button>

@@ -1,42 +1,44 @@
 <script>
     import { fade, scale } from "svelte/transition";
     import { modalStore } from "../stores/modalStore";
-    import {handleComment,getCommentText,getPostId} from "./CommentFunc.svelte";
+    import {
+        handleComment,
+        getCommentText,
+        getPostId,
+    } from "./CommentFunc.svelte";
     import { onMount } from "svelte";
     import axios from "axios";
     let commentText = $state("");
-    let myAvatar = localStorage.getItem("image")
-    let PostID = $derived(getPostId())
-    let handleCreateComments = ()=>{
-        axios.post(`https://tarmeezacademy.com/api/v1/posts/${PostID}/comments`,{
-            body:commentText
-        },
-        {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        }
-        
-    )
-        .then(()=>handleComment(PostID))
-        .then((res)=>console.log(res))
-        .catch((err)=>console.log(err))
-      }
-      
-
-
-    
+    let myAvatar = localStorage.getItem("image");
+    let PostID = $derived(getPostId());
+    let handleCreateComments = () => {
+        axios
+            .post(
+                `https://tarmeezacademy.com/api/v1/posts/${PostID}/comments`,
+                {
+                    body: commentText,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                },
+            )
+            .then(() => handleComment(PostID))
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+    };
 
     function handleClose() {
         modalStore.close();
         commentText = "";
     }
-    
+
     function handleSubmit() {
         if (!commentText.trim()) return;
-        handleCreateComments()
-        
+        handleCreateComments();
+
         commentText = "";
     }
 </script>
@@ -94,11 +96,7 @@
 
             <div class="modal-footer">
                 <div class="input-wrapper">
-                    <img
-                        src={myAvatar}
-                        alt="My Avatar"
-                        class="my-avatar"
-                    />
+                    <img src={myAvatar} alt="My Avatar" class="my-avatar" />
                     <div class="input-box">
                         <textarea
                             placeholder="Write a comment..."
@@ -243,11 +241,11 @@
         margin: 0;
     }
 
-    .comment-time {
+    /* .comment-time {
         font-size: 0.75rem;
         color: var(--text-secondary);
         margin-left: var(--spacing-sm);
-    }
+    } */
 
     .modal-footer {
         padding: var(--spacing-md);
@@ -335,14 +333,18 @@
 
     @media (max-width: 768px) {
         .modal-backdrop {
-            align-items: flex-end;
-            padding: 0;
+            align-items: center; /* Centered as requested */
+            padding: var(--spacing-md); /* Add spacing */
         }
 
         .modal-container {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
+            border-radius: var(--radius-lg); /* Restore radius */
             max-height: 80vh;
+            width: 100%;
+        }
+
+        .close-btn {
+            padding: 12px; /* Larger touch target */
         }
     }
 </style>

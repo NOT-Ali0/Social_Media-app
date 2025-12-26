@@ -20,20 +20,16 @@
 
     let profileposts = $state([]);
 
-    
-
-
     let handleProfilePosts = () => {
         axios
             .get("https://tarmeezacademy.com/api/v1/posts")
             .then((res) => {
                 profileposts = res.data.data.filter(
-                    (post) => post.author.id == localStorage.getItem("id")
+                    (post) => post.author.id == localStorage.getItem("id"),
                 );
             })
             .catch((err) => console.log(err));
     };
-
 
     // for (let i = 0; i < res.data.data.length; i++) {
     //                 if (
@@ -43,27 +39,26 @@
     //                 }
     //             }
 
-
     onMount(() => {
         handleProfilePosts();
     });
 
-    // editting section
-    let title = $state("");
-    let file = $state(null);
-    let body = $state("");
-    let handleClose = () => {
-        isOpen = false;
-    };
-    let handleOpen = () => {
-        isOpen = true;
-    };
-    let handleImageFile = (e) => {
-        file = e.target.files[0];
-    };
-    let handleSubmit = () => {
-        isOpen = false;
-    };
+    // // editting section
+    // let title = $state("");
+    // let file = $state(null);
+    // let body = $state("");
+    // let handleClose = () => {
+    //     isOpen = false;
+    // };
+    // let handleOpen = () => {
+    //     isOpen = true;
+    // };
+    // let handleImageFile = (e) => {
+    //     file = e.target.files[0];
+    // };
+    // let handleSubmit = () => {
+    //     isOpen = false;
+    // };
 </script>
 
 <div class="profile-container">
@@ -139,8 +134,6 @@
     </div>
 </div>
 <EditPostModal on:reload={handleProfilePosts} />
-
-
 
 <style>
     .profile-container {
@@ -306,150 +299,6 @@
         .avatar-large {
             width: 140px;
             height: 140px;
-        }
-    }
-    /* editing style */
-
-    .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: var(--spacing-md);
-    }
-
-    .modal-container {
-        background: var(--card-bg);
-        width: 100%;
-        max-width: 500px;
-        border-radius: var(--radius-lg);
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-        position: relative;
-    }
-
-    .modal-header {
-        padding: var(--spacing-md);
-        border-bottom: 1px solid var(--divider-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .modal-header h3 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0;
-    }
-
-    .close-btn {
-        padding: 8px;
-        border-radius: 50%;
-        background: var(--bg-color);
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-        border: none;
-    }
-
-    .close-btn:hover {
-        background: #e4e6eb;
-        color: var(--text-primary);
-    }
-
-    .modal-body {
-        padding: var(--spacing-md);
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-md);
-    }
-
-    .input-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .input-group label {
-        font-weight: 600;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-
-    .input-group input,
-    .input-group textarea {
-        padding: 10px;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--divider-color);
-        background: var(--bg-color);
-        color: var(--text-primary);
-        font-family: inherit;
-        font-size: 1rem;
-        transition: border-color 0.2s;
-        outline: none;
-    }
-
-    .input-group input:focus,
-    .input-group textarea:focus {
-        border-color: var(--primary-color);
-        border-width: 2px;
-        padding: 9px; /* adjust for border width */
-    }
-
-    .input-group textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .modal-footer {
-        padding: var(--spacing-md);
-        border-top: 1px solid var(--divider-color);
-        display: flex;
-        justify-content: flex-end;
-        gap: var(--spacing-sm);
-    }
-
-    .btn-cancel {
-        padding: 8px 16px;
-        border-radius: var(--radius-sm);
-        font-weight: 600;
-        color: var(--text-secondary);
-        background: transparent;
-        transition: background 0.2s;
-    }
-
-    .btn-cancel:hover {
-        background: var(--bg-color);
-    }
-
-    .btn-save {
-        padding: 8px 24px;
-        border-radius: var(--radius-sm);
-        font-weight: 600;
-        color: white;
-        background: var(--primary-color);
-        transition: opacity 0.2s;
-    }
-
-    .btn-save:hover {
-        opacity: 0.9;
-    }
-
-    @media (max-width: 600px) {
-        .modal-container {
-            width: 95%;
         }
     }
 </style>

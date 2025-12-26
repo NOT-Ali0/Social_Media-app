@@ -6,54 +6,48 @@
     import { slide } from "svelte/transition";
     import { BodystateValue } from "../stores/BodyStateValue";
     import axios from "axios";
-    import {createEventDispatcher} from "svelte"
+    import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
 
     const handleReload = () => {
         dispatch("reload");
-    }
+    };
 
-
-    
     let showMenu = false;
     function toggleMenu() {
         showMenu = !showMenu;
     }
 
     function handleEdit(id) {
-        BodystateValue.update((state)=>({...state,
-            id:id,
-            token:localStorage.getItem("token"),
-        }))
+        BodystateValue.update((state) => ({
+            ...state,
+            id: id,
+            token: localStorage.getItem("token"),
+        }));
         editModalStore.open(post);
         showMenu = false;
     }
 
     function handleDelete() {
-        confirm("Are you sure you want to delete this post?")
+        confirm("Are you sure you want to delete this post?");
 
-        axios.delete(`https://tarmeezacademy.com/api/v1/posts/${post.id}`,{
-            headers:{
-                "content-type":"application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        })
-        .then((res)=>{
-            handleReload()
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
+        axios
+            .delete(`https://tarmeezacademy.com/api/v1/posts/${post.id}`, {
+                headers: {
+                    "content-type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((res) => {
+                handleReload();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
 
         showMenu = false;
-
     }
-
-
-    
-
-    
 </script>
 
 <svelte:window
@@ -100,7 +94,10 @@
 
             {#if showMenu}
                 <div class="dropdown-menu" transition:slide={{ duration: 150 }}>
-                    <button class="menu-item" on:click={()=>handleEdit(post.id)}>
+                    <button
+                        class="menu-item"
+                        on:click={() => handleEdit(post.id)}
+                    >
                         <span class="menu-icon">✏️</span> Edit
                     </button>
                     <button class="menu-item delete" on:click={handleDelete}>
@@ -224,7 +221,7 @@
 
     .tags-cont {
         display: flex;
-        width: auto; 
+        width: auto;
         max-width: 100%;
         border-radius: 20px;
         flex-direction: row;
@@ -234,14 +231,8 @@
         align-items: center;
         margin-top: 5px;
         gap: 5px;
-        display: inline-flex; 
+        display: inline-flex;
         margin-right: 8px;
-    }
-
-    .tags-cont p {
-        padding: 0;
-        margin: 0;
-        font-size: 0.85rem;
     }
 
     .post-card {
@@ -250,7 +241,7 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         margin-bottom: var(--spacing-md, 16px);
         width: 100%;
-        position: relative; 
+        position: relative;
     }
 
     .post-header {
@@ -286,21 +277,6 @@
     .time {
         font-size: 0.8rem;
         color: var(--text-secondary, #65676b);
-    }
-
-    .more-btn {
-        padding: 8px;
-        border-radius: 50%;
-        color: var(--text-secondary);
-    }
-
-    .more-btn:hover {
-        background: var(--bg-color);
-    }
-
-    .more-btn svg {
-        width: 20px;
-        height: 20px;
     }
 
     .post-content p {
@@ -339,11 +315,12 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: var(--spacing-sm) 0;
+        padding: 12px 0; /* Larger touch target */
         font-weight: 600;
         color: var(--text-secondary);
         border-radius: var(--radius-sm);
         transition: background 0.2s;
+        min-height: 48px;
     }
 
     .action-btn:hover {

@@ -184,9 +184,29 @@
     }
 
     @media (max-width: 768px) {
-        .search,
         .nav-middle {
             display: none;
+        }
+
+        /* Make search visible but flexible */
+        .search {
+            display: flex;
+            width: auto;
+            flex: 1;
+            margin: 0 var(--spacing-sm);
+        }
+
+        .search input {
+            width: 100%;
+            min-width: 50px;
+        }
+
+        .navbar {
+            padding: 0 var(--spacing-sm);
+        }
+
+        .logo {
+            transform: scale(0.9);
         }
     }
 </style>

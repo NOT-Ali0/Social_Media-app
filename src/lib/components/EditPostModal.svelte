@@ -15,7 +15,6 @@
     let isOpen = $state(false);
     let post = null;
     let body = $state("");
-    
 
     function handleBodyvalue(e) {
         body = e.target.value;
@@ -40,7 +39,6 @@
             .then(() => handleReload())
             .then(() => editModalStore.close())
             .catch((err) => console.log(err));
-            
     }
 
     editModalStore.subscribe((state) => {
@@ -53,8 +51,6 @@
     function handleClose() {
         editModalStore.close();
     }
-
-    
 </script>
 
 {#if isOpen}
@@ -206,8 +202,7 @@
         font-size: 0.9rem;
     }
 
-    .input-group input,
-    .input-group textarea {
+    .input-group input {
         padding: 12px;
         border-radius: var(--radius-sm, 8px);
         border: 1px solid var(--divider-color, #ddd);
@@ -221,16 +216,10 @@
         box-sizing: border-box;
     }
 
-    .input-group input:focus,
-    .input-group textarea:focus {
+    .input-group input:focus {
         border-color: var(--primary-color, #1877f2);
         background: white;
         box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
-    }
-
-    .input-group textarea {
-        resize: vertical;
-        min-height: 120px;
     }
 
     .modal-footer {

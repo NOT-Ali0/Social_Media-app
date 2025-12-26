@@ -7,10 +7,10 @@
         dispatch("navigate", page);
     }
 
-    let handleDeleteToken = ()=>{
+    let handleDeleteToken = () => {
         localStorage.removeItem("token");
         go("login");
-    }
+    };
 
     const items = [
         { id: "home", label: "Feed", icon: "🏠" },
@@ -85,25 +85,51 @@
     @media (max-width: 900px) {
         .sidebar {
             width: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .label {
             display: none;
         }
         .menu-item {
-            padding: 8px;
             justify-content: center;
             width: 50px;
             height: 50px;
             border-radius: 50%;
+            padding: 0;
         }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
         .sidebar {
+            width: 100%;
+            height: 60px;
+            position: fixed;
+            bottom: 0;
+            top: auto;
+            left: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            background: var(--card-bg);
+            box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .menu-item {
+            width: auto;
+            height: 100%;
+            border-radius: 0;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .divider {
             display: none;
         }
+
+        /* Optional: Hide Logout on mobile bar if it takes too much space, or keep it as icon */
     }
 </style>

@@ -56,7 +56,8 @@ button {
   font-family: inherit;
 }
 
-input, textarea {
+input,
+textarea {
   font-family: inherit;
 }
 
@@ -65,4 +66,14 @@ input, textarea {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+
+  input,
+  button,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
